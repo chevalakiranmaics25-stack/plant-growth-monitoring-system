@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Plant Growth Monitoring</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #f3f7f2;
+            color: #26382b;
+        }
+
+        header {
+            background: #174d32;
+            color: white;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 span {
+            color: #b9e8bd;
+        }
+
+        .hero {
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 50px 20px;
+            color: white;
+
+            background-image:
+                linear-gradient(
+                    rgba(10, 45, 25, 0.65),
+                    rgba(10, 45, 25, 0.65)
+                ),
+                url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1800");
+
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            max-width: 650px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            color: #205c38;
+            font-size: 22px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e5eee6;
+            padding-bottom: 15px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d8e3d9;
+            border-radius: 8px;
+            outline: none;
+            background: #fbfdfb;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #39945a;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 30px;
+            padding: 15px;
+            background: #267747;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #174d32;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #result {
+            display: none;
+            margin-top: 25px;
+            padding: 22px;
+            background: #e8f6eb;
+            border-left: 5px solid #299451;
+            border-radius: 10px;
+            text-align: center;
+            color: #205c38;
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .dashboard {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .dashboard-title {
+            color: #205c38;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-description {
+            color: #68786c;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+            border-left: 5px solid #299451;
+            transition: 0.3s;
+            min-width: 0;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-card h3 {
+            font-size: 14px;
+            color: #68786c;
+            margin-bottom: 12px;
+        }
+
+        .summary-card p {
+            font-size: 25px;
+            font-weight: 700;
+            color: #205c38;
+            overflow-wrap: anywhere;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+            min-width: 0;
+        }
+
+        .chart-card h3 {
+            color: #205c38;
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        .chart-note {
+            font-size: 12px;
+            color: #7a887d;
+            margin-top: 15px;
+        }
+
+        .history-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 13px 10px;
+            border-bottom: 1px solid #e5eee6;
+        }
+
+        .history-table th {
+            background: #e8f6eb;
+            color: #205c38;
+            font-weight: 600;
+        }
+
+        .history-table tbody tr:hover {
+            background: #f7fbf7;
+        }
+
+        .history-message {
+            text-align: center;
+            color: #68786c;
+            padding: 20px;
+        }
+
+        footer {
+            background: #174d32;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            font-size: 13px;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 650px) {
+            .form-grid,
+            .chart-grid,
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 25px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .hero {
+                background-attachment: scroll;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <header>
+        <h2>🌱 Plant<span>Care</span></h2>
+        <p>Smart Monitoring System</p>
+    </header>
+
+
+    <!-- HERO SECTION -->
+
+    <section class="hero">
+
+        <h1>Smart Plant Growth Monitoring</h1>
+
+        <p>
+            Monitor plant conditions and predict new growth
+            using Machine Learning.
+        </p>
+
+    </section>
+
+
+    <!-- PLANT INPUT FORM -->
+
+    <div class="container">
+
+        <div class="form-card">
+
+            <h3 class="section-title">
+                🌿 Enter Plant Details
+            </h3>
+
+            <form id="plantForm">
+
+                <div class="form-grid">
+
+                    <div class="input-group">
+                        <label>Plant / Tree Name</label>
+                        <input
+                            type="text"
+                            name="plant_name"
+                            placeholder="Example: Mango, Neem, Rose"
+                            required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Plant Height (cm)</label>
+                        <input type="number" name="Height_cm" step="any" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Leaf Count</label>
+                        <input type="number" name="Leaf_Count" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Watering Amount (ml)</label>
+                        <input type="number" name="Watering_Amount_ml" step="any" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Watering Frequency (days)</label>
+                        <input type="number" name="Watering_Frequency_days" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Room Temperature (°C)</label>
+                        <input type="number" name="Room_Temperature_C" step="any" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Humidity (%)</label>
+                        <input type="number" name="Humidity_%" step="any" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Fertilizer Amount (ml)</label>
+                        <input type="number" name="Fertilizer_Amount_ml" step="any" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Soil Moisture (%)</label>
+                        <input type="number" name="Soil_Moisture_%" step="any" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Soil Type</label>
+                        <select name="Soil_Type">
+                            <option>Chalky</option>
+                            <option>Clay</option>
+                            <option>Loamy</option>
+                            <option>Peaty</option>
+                            <option>Sandy</option>
+                            <option>Silty</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Fertilizer Type</label>
+                        <select name="Fertilizer_Type">
+                            <option>Chemical</option>
+                            <option>Compost</option>
+                            <option>Liquid feed</option>
+                            <option>No fertilizer</option>
+                            <option>Organic</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Pest Severity</label>
+                        <select name="Pest_Severity">
+                            <option>High</option>
+                            <option>Low</option>
+                            <option>Moderate</option>
+                            <option>None</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Sunlight Exposure</label>
+                        <select name="Sunlight_Exposure">
+                            <option>3h direct morning sun</option>
+                            <option>6h full sun</option>
+                            <option>Filtered sunlight through curtain</option>
+                            <option>Indirect light all day</option>
+                            <option>Low light corner</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Pest Presence</label>
+                        <select name="Pest_Presence">
+                            <option>Aphids</option>
+                            <option>Fungus gnats</option>
+                            <option>No pest</option>
+                            <option>Spider mites</option>
+                            <option>Whiteflies</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <button type="submit" id="predictBtn">
+                    🌱 Predict New Growth
+                </button>
+
+            </form>
+
+            <div id="result"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DASHBOARD -->
+
+    <section class="dashboard">
+
+        <h2 class="dashboard-title">
+            🌿 Plant Growth Dashboard
+        </h2>
+
+        <p class="dashboard-description">
+            Visual analysis of your plant conditions and ML prediction.
+            Submit the plant form to update these charts.
+        </p>
+
+
+        <!-- SUMMARY CARDS -->
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+                <h3>🌱 Plant Name</h3>
+                <p id="plantNameValue">--</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>🌿 Plant Height</h3>
+                <p id="heightValue">-- cm</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>🌱 Predicted Growth</h3>
+                <p id="growthValue">--</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>💧 Soil Moisture</h3>
+                <p id="moistureValue">-- %</p>
+            </div>
+
+        </div>
+
+
+        <!-- CHARTS -->
+
+        <div class="chart-grid">
+
+            <div class="chart-card">
+                <h3>🌱 Predicted New Growth Count</h3>
+                <div class="chart-container">
+                    <canvas id="growthChart"></canvas>
+                </div>
+                <p class="chart-note">
+                    Estimated new growth count from the ML model.
+                </p>
+            </div>
+
+            <div class="chart-card">
+                <h3>💧 Soil Moisture Level</h3>
+                <div class="chart-container">
+                    <canvas id="moistureChart"></canvas>
+                </div>
+                <p class="chart-note">
+                    Current soil moisture entered in the form.
+                </p>
+            </div>
+
+            <div class="chart-card">
+                <h3>🌡️ Temperature & Humidity</h3>
+                <div class="chart-container">
+                    <canvas id="climateChart"></canvas>
+                </div>
+                <p class="chart-note">
+                    Current temperature and humidity entered in the form.
+                </p>
+            </div>
+
+            <div class="chart-card">
+                <h3>📈 Growth History</h3>
+                <div class="chart-container">
+                    <canvas id="historyGrowthChart"></canvas>
+                </div>
+                <p class="chart-note">
+                    Predicted growth values from previous prediction records.
+                </p>
+            </div>
+
+            <div class="chart-card">
+                <h3>🌿 Plant Height vs Predicted Growth</h3>
+                <div class="chart-container">
+                    <canvas id="heightGrowthChart"></canvas>
+                </div>
+                <p class="chart-note">
+                    Relationship between plant height and predicted growth.
+                </p>
+            </div>
+
+            <div class="chart-card">
+                <h3>💧 Soil Moisture vs Predicted Growth</h3>
+                <div class="chart-container">
+                    <canvas id="soilGrowthChart"></canvas>
+                </div>
+                <p class="chart-note">
+                    Relationship between soil moisture and predicted growth.
+                </p>
+            </div>
+
+            <div class="chart-card">
+                <h3>🍃 Leaf Count vs Predicted Growth</h3>
+                <div class="chart-container">
+                    <canvas id="leafGrowthChart"></canvas>
+                </div>
+                <p class="chart-note">
+                    Relationship between leaf count and predicted growth.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PREDICTION HISTORY -->
+
+    <section class="dashboard">
+
+        <h2 class="dashboard-title">📋 Prediction History</h2>
+
+        <p class="dashboard-description">
+            View your previously saved plant predictions.
+        </p>
+
+        <div class="history-card">
+
+            <table class="history-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Plant Name</th>
+                        <th>Height (cm)</th>
+                        <th>Leaf Count</th>
+                        <th>Temperature (°C)</th>
+                        <th>Humidity (%)</th>
+                        <th>Soil Moisture (%)</th>
+                        <th>Predicted Growth</th>
+                        <th>Prediction Date</th>
+                    </tr>
+                </thead>
+
+                <tbody id="historyBody">
+                    <tr>
+                        <td colspan="9" class="history-message">
+                            Loading prediction history...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+        Smart Plant Growth Monitoring and Prediction System
+        <br><br>
+        Powered by Machine Learning
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        // CHART VARIABLES
+
+        let growthChart;
+        let moistureChart;
+        let climateChart;
+
+        let historyGrowthChart;
+        let heightGrowthChart;
+        let soilGrowthChart;
+        let leafGrowthChart;
+
+
+        // PREDICTION FORM
+
+        document.getElementById("plantForm").addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                const button = document.getElementById("predictBtn");
+                const resultBox = document.getElementById("result");
+
+                const formData = new FormData(this);
+                const data = {};
+
+                formData.forEach((value, key) => {
+
+                    if (!isNaN(value) && value.trim() !== "") {
+                        data[key] = Number(value);
+                    } else {
+                        data[key] = value;
+                    }
+
+                });
+
+                button.disabled = true;
+                button.innerText = "Predicting...";
+
+                resultBox.style.display = "block";
+                resultBox.innerText = "Please wait...";
+
+                try {
+
+                    const response = await fetch("/predict", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(data)
+
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.error || "Prediction failed");
+                    }
+
+                    const prediction =
+                        Number(result.predicted_new_growth_count);
+
+                    resultBox.innerText =
+                        "🌱 " + (result.plant_name || data.plant_name) +
+                        " - Predicted New Growth Count: " + prediction;
+
+
+                    // UPDATE DASHBOARD
+
+                    updateDashboard(
+                        prediction,
+                        data["Height_cm"],
+                        data["Soil_Moisture_%"],
+                        data["Room_Temperature_C"],
+                        data["Humidity_%"],
+                        result.plant_name || data["plant_name"]
+                    );
+
+
+                    // UPDATE HISTORY
+
+                    await loadHistory();
+
+                } catch (error) {
+
+                    resultBox.innerText =
+                        "Error: " + error.message;
+
+                    console.error("Prediction error:", error);
+
+                } finally {
+
+                    button.disabled = false;
+                    button.innerText = "🌱 Predict New Growth";
+
+                }
+
+            }
+
+        );
+
+
+        // DASHBOARD UPDATE FUNCTION
+
+        function updateDashboard(
+            prediction,
+            height,
+            moisture,
+            temperature,
+            humidity,
+            plantName
+        ) {
+
+            document.getElementById("plantNameValue").innerText =
+                plantName || "--";
+
+            document.getElementById("heightValue").innerText =
+                height + " cm";
+
+            document.getElementById("growthValue").innerText =
+                prediction;
+
+            document.getElementById("moistureValue").innerText =
+                moisture + " %";
+
+
+            // GROWTH CHART
+
+            if (growthChart) {
+                growthChart.destroy();
+            }
+
+            growthChart = new Chart(
+                document.getElementById("growthChart"),
+                {
+                    type: "bar",
+
+                    data: {
+                        labels: ["Predicted Growth"],
+
+                        datasets: [{
+                            label: "New Growth Count",
+                            data: [prediction],
+                            backgroundColor: "#299451",
+                            borderRadius: 8,
+                            barThickness: 70
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Growth Count"
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+
+            // SOIL MOISTURE CHART
+
+            if (moistureChart) {
+                moistureChart.destroy();
+            }
+
+            const moistureValue = Math.max(
+                0,
+                Math.min(100, moisture)
+            );
+
+            moistureChart = new Chart(
+                document.getElementById("moistureChart"),
+                {
+                    type: "doughnut",
+
+                    data: {
+                        labels: [
+                            "Soil Moisture",
+                            "Remaining"
+                        ],
+
+                        datasets: [{
+                            data: [
+                                moistureValue,
+                                100 - moistureValue
+                            ],
+
+                            backgroundColor: [
+                                "#299451",
+                                "#e4eee5"
+                            ],
+
+                            borderWidth: 0
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        plugins: {
+                            legend: {
+                                position: "bottom"
+                            }
+                        }
+                    }
+                }
+            );
+
+
+            // TEMPERATURE AND HUMIDITY CHART
+
+            if (climateChart) {
+                climateChart.destroy();
+            }
+
+            climateChart = new Chart(
+                document.getElementById("climateChart"),
+                {
+                    type: "bar",
+
+                    data: {
+                        labels: [
+                            "Temperature (°C)",
+                            "Humidity (%)"
+                        ],
+
+                        datasets: [{
+                            label: "Current Plant Conditions",
+
+                            data: [
+                                temperature,
+                                humidity
+                            ],
+
+                            backgroundColor: [
+                                "#e9a23b",
+                                "#4c9bd6"
+                            ],
+
+                            borderRadius: 8
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                }
+            );
+
+        }
+
+
+        // LOAD PREDICTION HISTORY
+
+        async function loadHistory() {
+
+            const historyBody =
+                document.getElementById("historyBody");
+
+            try {
+
+                const response = await fetch("/history");
+
+                if (!response.ok) {
+                    throw new Error("Unable to fetch history");
+                }
+
+                const records = await response.json();
+
+                historyBody.replaceChildren();
+
+                if (!Array.isArray(records) || records.length === 0) {
+
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+
+                    cell.colSpan = 9;
+                    cell.className = "history-message";
+                    cell.textContent = "No prediction history available.";
+
+                    row.appendChild(cell);
+                    historyBody.appendChild(row);
+
+                    updateHistoryCharts([]);
+
+                    return;
+                }
+
+
+                // HISTORY TABLE
+
+                records.forEach(record => {
+
+                    const row = document.createElement("tr");
+
+                    const values = [
+                        record[0],
+                        record[8] || "--",
+                        record[1],
+                        record[2],
+                        record[3],
+                        record[4],
+                        record[5],
+                        Number(record[6]).toFixed(2),
+                        record[7]
+                    ];
+
+                    values.forEach(value => {
+
+                        const cell = document.createElement("td");
+
+                        cell.textContent = value ?? "--";
+
+                        row.appendChild(cell);
+
+                    });
+
+                    historyBody.appendChild(row);
+
+                });
+
+
+                // UPDATE HISTORY CHARTS
+
+                updateHistoryCharts(records);
+
+            } catch (error) {
+
+                historyBody.replaceChildren();
+
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+
+                cell.colSpan = 9;
+                cell.className = "history-message";
+                cell.textContent = "Unable to load prediction history.";
+
+                row.appendChild(cell);
+                historyBody.appendChild(row);
+
+                console.error("History loading error:", error);
+
+            }
+
+        }
+
+
+        // UPDATE HISTORY CHARTS
+
+        function updateHistoryCharts(records) {
+
+            /*
+                DATABASE RECORD FORMAT:
+
+                0 = ID
+                1 = Height
+                2 = Leaf Count
+                3 = Temperature
+                4 = Humidity
+                5 = Soil Moisture
+                6 = Predicted Growth
+                7 = Prediction Date
+                8 = Plant Name
+            */
+
+            const sortedRecords = [...records].sort(
+                (a, b) => Number(a[0]) - Number(b[0])
+            );
+
+
+            // CHART 1: GROWTH HISTORY
+
+            if (historyGrowthChart) {
+                historyGrowthChart.destroy();
+            }
+
+            historyGrowthChart = new Chart(
+                document.getElementById("historyGrowthChart"),
+                {
+                    type: "line",
+
+                    data: {
+                        labels: sortedRecords.map(
+                            record => "ID " + record[0]
+                        ),
+
+                        datasets: [{
+                            label: "Predicted Growth",
+
+                            data: sortedRecords.map(
+                                record => Number(record[6])
+                            ),
+
+                            borderColor: "#299451",
+                            backgroundColor: "rgba(41,148,81,0.15)",
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 5
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Predicted Growth Count"
+                                }
+                            },
+
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Prediction Record"
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+
+            // CHART 2: HEIGHT VS GROWTH
+
+            if (heightGrowthChart) {
+                heightGrowthChart.destroy();
+            }
+
+            heightGrowthChart = new Chart(
+                document.getElementById("heightGrowthChart"),
+                {
+                    type: "scatter",
+
+                    data: {
+                        datasets: [{
+                            label: "Plant Records",
+
+                            data: sortedRecords.map(record => ({
+                                x: Number(record[1]),
+                                y: Number(record[6])
+                            })),
+
+                            backgroundColor: "#299451",
+                            pointRadius: 6
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Plant Height (cm)"
+                                }
+                            },
+
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Predicted Growth"
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+
+            // CHART 3: SOIL MOISTURE VS GROWTH
+
+            if (soilGrowthChart) {
+                soilGrowthChart.destroy();
+            }
+
+            soilGrowthChart = new Chart(
+                document.getElementById("soilGrowthChart"),
+                {
+                    type: "scatter",
+
+                    data: {
+                        datasets: [{
+                            label: "Plant Records",
+
+                            data: sortedRecords.map(record => ({
+                                x: Number(record[5]),
+                                y: Number(record[6])
+                            })),
+
+                            backgroundColor: "#4c9bd6",
+                            pointRadius: 6
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Soil Moisture (%)"
+                                }
+                            },
+
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Predicted Growth"
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+
+            // CHART 4: LEAF COUNT VS GROWTH
+
+            if (leafGrowthChart) {
+                leafGrowthChart.destroy();
+            }
+
+            leafGrowthChart = new Chart(
+                document.getElementById("leafGrowthChart"),
+                {
+                    type: "scatter",
+
+                    data: {
+                        datasets: [{
+                            label: "Plant Records",
+
+                            data: sortedRecords.map(record => ({
+                                x: Number(record[2]),
+                                y: Number(record[6])
+                            })),
+
+                            backgroundColor: "#e9a23b",
+                            pointRadius: 6
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Leaf Count"
+                                }
+                            },
+
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: "Predicted Growth"
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+
+        }
+
+
+        // LOAD HISTORY WHEN PAGE OPENS
+
+        loadHistory();
+
+    </script>
+
+</body>
+</html>
